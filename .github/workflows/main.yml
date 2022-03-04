@@ -25,7 +25,7 @@ jobs:
       env:
         webhook_url: "https://reviewmanager2022.herokuapp.com/review-store"
         webhook_secret: "1234"
-        data: '{ "user_email": "${{github.event.pull_request.user.login}}", "reviewer_email": "${{github.event.comment.user.login}}",  "commit_id": "${{github.event.comment.user.commit_id}}", "repo_link": "${{github.event.repository.html_url}}", "comment_id": "${{github.event.comment.id}}", "comment": "${{github.event.comment.body}}" }'
+        data: '{ "user_email": "${{github.event.pull_request.user.login}}", "reviewer_email": "${{github.event.comment.user.login}}",  "commit_id": "${{github.event.comment.user.commit_id}}", "repo_link": "${{github.event.repository.html_url}}", "comment_id": "${{github.event.comment.id}}", "comment": "${{toJson(github.event.comment.body)}}" }'
   printJob:    
     name: Print event
     runs-on: ubuntu-latest
