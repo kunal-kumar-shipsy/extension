@@ -1,0 +1,168 @@
+:root {
+	--rgh-green: var(--color-fg-success, #1a7f37);
+	--rgh-red: var(--color-fg-danger, #cf222e);
+	--rgh-border-color: var(--color-border-muted, #d8dee4);
+	--rgh-background: var(--color-canvas-default, var(--color-bg-canvas, #fff));
+}
+
+/* Make tab indented code more readable on GitHub and Gist */
+:root, /* GHE, drop in February 2022 */
+.comment-body [data-tab-size='8'] { /* User setting is ignored in comments #4833 */
+	--tab-size: 4;
+}
+
+* {
+	-moz-tab-size: var(--tab-size) !important;
+	tab-size: var(--tab-size) !important;
+}
+
+/* For `open-all-selected` and `pr-filters`: set a reduced padding for all buttons for #1830 and #1904 */
+#js-issues-toolbar .table-list-header-toggle details {
+	padding: 0 !important;
+}
+
+#js-issues-toolbar .table-list-header-toggle summary {
+	padding-left: 8px !important;
+	padding-right: 8px !important;
+}
+
+#js-issues-toolbar .table-list-header-toggle > :last-child > summary {
+	padding-right: 0 !important;
+}
+
+/* Hide empty description of repo */
+.repository-meta.mb-3 > .repository-meta-content > em {
+	display: none !important;
+}
+
+/* Hide `New pull request button` near file list */
+.file-navigation .new-pull-request-btn {
+	display: none;
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0%;
+	}
+}
+
+/* Smoothen mouse animation on 404 pages */
+.js-plaxify {
+	transition: transform 0.1s;
+}
+
+/* Remove "Seeing something unexpected?" from user profiles */
+#js-contribution-activity .js-show-more-timeline-form > p {
+	display: none;
+}
+
+/* Remove the 'Review Summary' header from the form */
+.pull-request-review-menu label[for='pull_request_review_body'] {
+	display: none !important;
+}
+
+/* Lighten deletions in Markdown */
+.markdown-body del {
+	color: var(--color-fg-subtle, var(--color-text-tertiary, #6a737d));
+}
+
+/* Make <details> visibly clickable */
+.markdown-body summary, /* Summary elements are always clickable when present */
+.markdown-body details:not([open]) { /* Summary-less details have unselectable clickable elements */
+	cursor: pointer;
+}
+
+/* Remove the "New repository" button in the dashboard sidebar */
+.dashboard-sidebar a.btn[href$='/new'] {
+	display: none;
+}
+
+.dashboard-sidebar .Box-title {
+	padding-top: 4px !important;
+	padding-bottom: 4px !important;
+}
+
+/* Expand empty diffs in PRs */
+:root .file .data.empty {
+	padding: 54px;
+	text-align: center;
+}
+
+:root .file .data table {
+	text-align: left;
+}
+
+/* Improve dropdown expansion animation (e.g. top-right dropdown in comments) */
+/* It normally pops in from the center */
+.dropdown-menu-sw {
+	transform-origin: 90% top;
+}
+
+/* Improve spacing in conversation lists meta, made feel crowded by:
+highlight-collaborators-and-own-conversations
+parse-backticks
+pr-branches
+*/
+.js-issue-row .text-small:is(.color-text-secondary, .color-fg-muted) {
+	line-height: 1.8;
+}
+
+/* Reset `vertical-align` for .octicons to work with above increased line-height */
+.js-issue-row .text-small:is(.color-text-secondary, .color-fg-muted) .octicon {
+	vertical-align: middle;
+}
+
+/* Hide duplicate "You can also open this in GitHub Desktop" in PRs’ mergeability box */
+#partial-pull-merging .js-remove-unless-platform {
+	display: none;
+}
+
+/* Increase scrollable area in GitHub Actions #3591 */
+.WorkflowRunLogsScroll {
+	height: auto !important;
+}
+
+/* Keep diff stats in "Jump to" dropdown when the header is fixed #3925 */
+.select-menu-item-text .diffstat {
+	display: inline !important;
+}
+
+/* Style the "Find feature" dialog that appears on top of the page */
+#rgh-bisect-dialog {
+	position: fixed;
+	bottom: 50%;
+	right: 50%;
+	transform: translate(50%, 50%);
+	min-width: 380px; /* Avoids a width change on the last step which causes the YES button to be where NO was */
+	box-shadow: var(--color-shadow-large, var(--color-toast-shadow));
+	z-index: 2147483647;
+}
+
+/* Space out "Edit" and "Open with" buttons on PR page, also for `view-last-pr-deployment` #4281 */
+.gh-header-actions [aria-label='Edit Pull Request title'] {
+	margin-left: 4px !important;
+	margin-right: 4px !important;
+}
+
+/* Remove the underline on PR filename copy button hover #4871 */
+.file-header .file-info clipboard-copy {
+	display: inline-block;
+}
+
+/* Limit width of commit title to 72 characters */
+#merge_title_field,
+#commit-summary-input {
+	/* 12px for the padding and 1px for the border https://user-images.githubusercontent.com/46634000/136789268-442caa39-33bc-4af3-8fb2-9cf6db722127.png */
+	width: calc(72ch + 26px);
+	max-width: 100%;
+}
+
+/* Ensure all buttons in the repo file navigation header are aligned in the center rather than to the top */
+.file-navigation.flex-items-start {
+	align-items: center !important;
+}
+
+/* Hide "Unpin" button in repo header https://github.com/refined-github/refined-github/issues/5398#issuecomment-1036112206 */
+.pagehead-actions [data-test-selector='pin-repo-button'] {
+	display: none !important;
+}
