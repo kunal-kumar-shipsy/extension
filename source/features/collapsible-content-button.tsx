@@ -9,6 +9,8 @@ import * as Textarea from '../helpers/Textarea';
 
 import features from '.';
 import smartBlockWrap from '../helpers/smart-block-wrap';
+import FuzzySet from 'fuzzyset';
+
 
 function addContentToDetails({ delegateTarget }: delegate.Event<MouseEvent, HTMLButtonElement>): void {
 	/* There's only one rich-text editor even when multiple fields are visible; the class targets it #5303 */
@@ -44,19 +46,20 @@ function addContentToDetails({ delegateTarget }: delegate.Event<MouseEvent, HTML
 	);
 }
 
-function addButtons(): void {
+function addButtons(textarea: any): void {
 	for (const anchor of document.querySelectorAll('md-ref:not(.rgh-collapsible-content-btn-added)')) {
 		anchor.classList.add('rgh-collapsible-content-btn-added');
 		anchor.after(
-			<button type="button" className="toolbar-item btn-octicon p-2 p-md-1 tooltipped tooltipped-sw rgh-collapsible-content-btn" aria-label="Add your comment">
+			<button type="button" className="toolbar-item btn-octicon p-2 p-md-1 tooltipped tooltipped-sw rgh-collapsible-content-btn" aria-label="Add your comment" onClick={async () => {await getSuggestion(textarea);} }   >
 				<FoldDownIcon />
 			</button>
 		);
 	}
 }
 
+
 function init(): void {
-	delegate(document, '.rgh-collapsible-content-btn', 'click', addContentToDetails);
+	// delegate(document, '.rgh-collapsible-content-btn', 'click', getSuggestion);
 	document.addEventListener('focusin', onFocus);
 	// fetch('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
 	// .then(response => response.json())
@@ -84,9 +87,9 @@ export default function onFocus(event: Event): void {
 	if (!textarea || !isCommentTextArea(textarea)) {
 		return;
 	}
-	textarea.addEventListener('keyup', event => onKeyUp(event.target));
+	// textarea.addEventListener('keyup', event => onKeyUp(event.target));
 
-	addButtons()
+	addButtons( textarea)
 }
 
 let suggestedWord = '';
@@ -137,17 +140,57 @@ const suggest = (textarea: any) => {
 	textarea.value = issueCodeContent;
 };
 
+const getDictionary: any = async () => {
+	const rawSuggestionList:any = await fetch('https://reviewmanager2022.herokuapp.com/guidelines');
+	
+	const suggestionList = await rawSuggestionList.json();
+	// return await suggestionList.map( (item:any) => {
+	// 	return `${item.guideline_id} - ${item.guideline_desc}`
+	// })
+
+	return suggestionList;
+}
+
+const getSuggestion = async (textarea: any) => {
+	const suggestionList = await getDictionary();
+
+	const currentToken = Textarea.getFullTextUnderDescription(textarea);
+	const currentWorldList: string[] = currentToken.split(" ").filter( (item:any) => item.length>3)
+
+
+	const filterSuggestionList = suggestionList.filter( (item: any) => {
+		const description = item.guideline_desc;
+		return description.split(" ").filter( (item1:any) => item1.length>3).find( (item2: any) => currentWorldList.includes(item2))
+	})
+
+
+	// const fuzzySet = FuzzySet(suggestionList, false,2,3 );
+
+	// const generatedSuggestion:any = fuzzySet.get(currentToken, 0.01);
+
+	// console.log(generatedSuggestion, "stsctscycsycs")
+
+	const result : any[] = []
+
+	filterSuggestionList.forEach( (item:any) => { 
+		result.push({"id": item.guideline_id, "desc": item.guideline_desc})
+	});
+
+
+	const issueCodeContent = generateIssueCodeContent(result, textarea);
+	textarea.value = issueCodeContent;
+};
+
 const generateIssueCodeContent = (issueCodes: string[], textarea: any) => {
-	let description = "This is the test description..."
 
 	let existingTextInEditor = textarea.value;
-	const beforeIssueCode = existingTextInEditor.split("ISSUE_CODE")[0]
+	const beforeIssueCode = existingTextInEditor.split("ISSUE CODE:")[0]
 
 	let content = 
-	`${beforeIssueCode}\nISSUE_CODE:`;
+	`${beforeIssueCode}\nISSUE CODE:`;
 
-	issueCodes.forEach( (issueCode: string) => {
-		content = `${content}\n- ${issueCode} : ${description}`
+	issueCodes.forEach( (issueCode: any) => {
+		content = `${content}\n${issueCode.id} - ${issueCode.desc}`
 	})
 
 	return content;
