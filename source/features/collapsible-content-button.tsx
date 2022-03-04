@@ -81,13 +81,14 @@ void features.add(import.meta.url, {
 function isCommentTextArea(el: any): any {
 	return el.nodeName === 'TEXTAREA' && (el.classList.contains('note-textarea') || el.classList.contains('comment-form-textarea'))
 }
-
-export default function onFocus(event: Event): void {
+let globalSuggestionList : any;
+export default async function onFocus(event: Event){
 	const textarea = event.target;
 	if (!textarea || !isCommentTextArea(textarea)) {
 		return;
 	}
 	// textarea.addEventListener('keyup', event => onKeyUp(event.target));
+	globalSuggestionList = await getDictionary();
 
 	addButtons( textarea)
 }
@@ -152,7 +153,7 @@ const getDictionary: any = async () => {
 }
 
 const getSuggestion = async (textarea: any) => {
-	const suggestionList = await getDictionary();
+	const suggestionList = globalSuggestionList;// await getDictionary();
 
 	const currentToken = Textarea.getFullTextUnderDescription(textarea);
 	const currentWorldList: string[] = currentToken.split(" ").filter( (item:any) => item.length>3)
@@ -187,7 +188,7 @@ const generateIssueCodeContent = (issueCodes: string[], textarea: any) => {
 	const beforeIssueCode = existingTextInEditor.split("ISSUE CODE:")[0]
 
 	let content = 
-	`${beforeIssueCode}\nISSUE CODE:`;
+	`${beforeIssueCode}\n------------------------------------------------\nISSUE CODE:`;
 
 	issueCodes.forEach( (issueCode: any) => {
 		content = `${content}\n${issueCode.id} - ${issueCode.desc}`
