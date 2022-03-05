@@ -15,7 +15,8 @@ import {getLocalHotfixes} from './helpers/hotfix';
 import {createRghIssueLink} from './helpers/rgh-issue-link';
 import {importedFeatures, featuresMeta} from '../readme.md';
 import {perDomainOptions, renamedFeatures} from './options-storage';
-
+//import falana dhimkana
+//hello world
 interface Status {
 	error?: true;
 	text?: string;
