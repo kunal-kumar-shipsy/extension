@@ -6,7 +6,7 @@ name: PR comment workflow
 on:
   # Triggers the workflow on pull request review comment events but only for the master branch
   pull_request_review_comment:
-    branch: [master, testbranch]
+    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
